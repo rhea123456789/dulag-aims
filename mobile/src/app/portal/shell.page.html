@@ -1,0 +1,21 @@
+<ion-menu contentId="portal" type="overlay">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Dulag FAIMS</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <p class="menu-office">Municipal Agriculture Office</p>
+    <ion-list lines="none">
+      <ion-item *ngFor="let item of menu" [routerLink]="item.path" routerLinkActive="selected" routerDirection="root" (click)="closeMenu()" detail="false">
+        {{ item.label }}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+  <ion-footer class="menu-foot">
+    <strong>{{ auth.user()?.name }}</strong>
+    <p>{{ auth.user()?.role?.name }}</p>
+    <ion-button expand="block" fill="outline" color="primary" (click)="logout()">Log out</ion-button>
+  </ion-footer>
+</ion-menu>
+<ion-router-outlet id="portal"></ion-router-outlet>

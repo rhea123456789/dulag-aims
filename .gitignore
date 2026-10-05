@@ -1,0 +1,62 @@
+# Secrets and local environment
+**/.env
+**/.env.*
+!**/.env.example
+mobile/src/environments/environment.local.ts
+**/*.pem
+**/*.key
+**/*.jks
+**/*.keystore
+**/*.p12
+auth.json
+
+# Dependencies
+**/node_modules/
+**/vendor/
+
+# Generated website and mobile output
+**/dist/
+**/dist-ssr/
+**/www/
+**/.angular/
+**/out-tsc/
+**/tmp/
+
+# Android / Gradle
+**/*.apk
+**/*.aab
+**/*.ap_
+**/*.dex
+**/local.properties
+**/.gradle/
+**/android/**/build/
+**/captures/
+**/.externalNativeBuild/
+**/.cxx/
+mobile/android/app/src/main/assets/public/
+mobile/android/app/src/main/assets/capacitor.config.json
+mobile/android/app/src/main/assets/capacitor.plugins.json
+mobile/android/capacitor-cordova-android-plugins/
+
+# Laravel runtime. Each storage directory keeps its own .gitignore so the
+# empty folders still exist after a clone.
+**/storage/pail/
+**/bootstrap/cache/*.php
+**/.phpunit.result.cache
+**/.phpunit.cache
+
+# Editors and OS
+**/.idea/
+**/.vscode/
+**/.DS_Store
+**/Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Database dumps are not the source of the schema
+**/*.sql
+**/*.sqlite
+**/*.sqlite3

@@ -1,0 +1,231 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* Light government theme. Dark palette is not used. */
+
+.public-page,
+.portal-page {
+  --background: #f8f5ee;
+}
+
+.hero-block,
+.form-card,
+.panel {
+  margin: 16px;
+  padding: 18px;
+  background: #fff;
+  border-radius: 16px;
+}
+
+.summary-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.summary-card-head h2 {
+  margin: 0;
+}
+
+.summary-copy h3 {
+  margin: 18px 0 6px;
+  color: #0b5d3b;
+  font-family: Georgia, "Palatino Linotype", Palatino, serif;
+  font-size: 1.05rem;
+}
+
+.summary-copy h3:first-child {
+  margin-top: 0;
+}
+
+.summary-copy p {
+  margin: 0 0 12px;
+  line-height: 1.55;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #1b7a45;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0 0 8px;
+  color: #0b5d3b;
+  font-family: Georgia, "Palatino Linotype", serif;
+}
+
+.lede,
+.hello,
+.empty {
+  color: #3d4a42;
+}
+
+.choice + .choice {
+  margin-top: 12px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 16px;
+}
+
+.stat-grid article {
+  padding: 14px;
+  background: #fff;
+  border-radius: 14px;
+}
+
+.stat-grid strong {
+  display: block;
+  color: #0b5d3b;
+  font-size: 1.4rem;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.welcome h1,
+.panel h2 {
+  font-family: Georgia, "Palatino Linotype", Palatino, serif;
+  color: #173c28;
+}
+
+.panel h2 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+}
+
+.panel p,
+ion-item ion-label h2,
+ion-item ion-label p,
+.summary-copy p {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.bar-row {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto;
+}
+
+.bar-row span {
+  overflow-wrap: anywhere;
+}
+
+.bar-track {
+  height: 8px;
+  background: #e7efe9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.bar-track div {
+  height: 100%;
+  background: #0b5d3b;
+}
+
+ion-menu::part(container) {
+  --width: min(86vw, 320px);
+}
+
+ion-menu ion-content {
+  --background: #f6f3ea;
+}
+
+ion-menu ion-item {
+  --background: transparent;
+  --color: #173c28;
+}
+
+ion-menu ion-item.selected {
+  --background: #e7f2eb;
+  font-weight: 650;
+}
+
+.menu-office,
+.menu-foot p {
+  margin: 0;
+  color: #5c6b62;
+}
+
+.menu-office {
+  padding: 14px 16px 0;
+  font-size: 0.85rem;
+}
+
+.menu-foot {
+  padding: 12px 16px calc(16px + env(safe-area-inset-bottom));
+  background: #f6f3ea;
+  border-top: 1px solid #e4dfd2;
+}
+
+.menu-foot strong {
+  color: #0b5d3b;
+}
+
+.stat-grid article span,
+.stat-grid strong {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 380px) {
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bar-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .bar-track {
+    grid-column: 1 / -1;
+  }
+}

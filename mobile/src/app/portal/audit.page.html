@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Audit logs</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <ion-list>
+    <ion-item *ngFor="let row of rows">
+      <ion-label>
+        <h2>{{ row.action }}</h2>
+        <p>{{ row.module }} · {{ row.user?.name || 'System' }}</p>
+        <p>{{ row.created_at }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <p class="empty" *ngIf="!rows.length && !error">No activity recorded.</p>
+</ion-content>

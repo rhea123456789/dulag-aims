@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/"></ion-back-button></ion-buttons>
+    <ion-title>Account type</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="public-page">
+  <section class="form-card">
+    <h1>Create your account</h1>
+    <p class="lede">Select your account type to continue. Office accounts are issued by the Municipal Agriculture Office.</p>
+    <article class="choice">
+      <h2>Farmer</h2>
+      <p>Create a farmer profile and connect farm records.</p>
+      <ion-button expand="block" routerLink="/register/farmer">Continue</ion-button>
+    </article>
+    <article class="choice">
+      <h2>Beneficiary</h2>
+      <p>Create a beneficiary profile and track assistance status.</p>
+      <ion-button expand="block" fill="outline" routerLink="/register/beneficiary">Continue</ion-button>
+    </article>
+    <ion-button fill="clear" routerLink="/login">Already registered? Sign in</ion-button>
+  </section>
+</ion-content>

@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Beneficiaries</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <section class="panel" *ngIf="own">
+    <h1>{{ own.first_name }} {{ own.last_name }}</h1>
+    <p>{{ own.barangay }}</p>
+    <p *ngIf="own.address">{{ own.address }}</p>
+    <p *ngIf="own.contact_number">{{ own.contact_number }}</p>
+    <p>Status: {{ own.subsidy_status || 'No status recorded' }}</p>
+    <p *ngIf="own.notes">{{ own.notes }}</p>
+    <h2>Assistance received</h2>
+    <p *ngFor="let item of own.assistance">{{ item.date_received }} · {{ item.assistance_type }}<span *ngIf="item.quantity_or_amount"> · {{ item.quantity_or_amount }}</span></p>
+    <p *ngIf="!own.assistance?.length">No assistance records yet.</p>
+  </section>
+  <ion-list *ngIf="rows.length">
+    <ion-item *ngFor="let row of rows">
+      <ion-label>
+        <h2>{{ row.first_name }} {{ row.last_name }}</h2>
+        <p>{{ row.barangay }} · {{ row.subsidy_status || 'No status' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

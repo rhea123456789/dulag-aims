@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Production</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <ion-note color="success" *ngIf="message">{{ message }}</ion-note>
+  <section class="panel" *ngIf="auth.hasRole('system_administrator', 'mao_personnel', 'agricultural_technician')">
+    <h2>Add production</h2>
+    <ion-item>
+      <ion-select label="Farm" labelPlacement="stacked" [(ngModel)]="farmId">
+        <ion-select-option *ngFor="let farm of farms" [value]="farm.id">{{ farm.location }}, {{ farm.barangay }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item><ion-input label="Crop" labelPlacement="stacked" [(ngModel)]="crop"></ion-input></ion-item>
+    <ion-item><ion-input label="Quantity" labelPlacement="stacked" type="number" [(ngModel)]="quantity"></ion-input></ion-item>
+    <ion-item><ion-input label="Unit" labelPlacement="stacked" [(ngModel)]="unit"></ion-input></ion-item>
+    <ion-item><ion-input label="Season" labelPlacement="stacked" [(ngModel)]="season"></ion-input></ion-item>
+    <ion-button expand="block" (click)="save()">Save production</ion-button>
+  </section>
+  <ion-list>
+    <ion-item *ngFor="let row of rows">
+      <ion-label>
+        <h2>{{ row.crop_type }}</h2>
+        <p>{{ row.quantity }} {{ row.unit }} · {{ row.season || 'No season' }}</p>
+        <p *ngIf="row.farm">{{ row.farm.location }}, {{ row.farm.barangay }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <p class="empty" *ngIf="!rows.length && !error">No production records to show.</p>
+</ion-content>

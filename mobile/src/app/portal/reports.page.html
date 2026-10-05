@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Reports</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <section class="panel">
+    <h1>Reports</h1>
+    <p>Excel and PDF exports from the recorded registers. Available to MAO personnel and administrators.</p>
+  </section>
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <article class="panel" *ngFor="let report of reports">
+    <h2>{{ report[1] }}</h2>
+    <div class="actions">
+      <ion-button [disabled]="busy === report[0] + '-xlsx'" (click)="download(report[0], 'xlsx')">Download Excel</ion-button>
+      <ion-button fill="outline" [disabled]="busy === report[0] + '-pdf'" (click)="download(report[0], 'pdf')">Download PDF</ion-button>
+    </div>
+  </article>
+</ion-content>

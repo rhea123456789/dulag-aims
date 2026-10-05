@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>AI Duplicate Review</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <section class="panel">
+    <p>{{ notice }}</p>
+    <ion-button expand="block" (click)="scan()" [disabled]="busy">{{ busy ? 'Checking…' : 'Scan for possible duplicates' }}</ion-button>
+  </section>
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <article class="panel" *ngFor="let row of rows">
+    <h2>{{ row.record_type }} · {{ row.ai_result?.finding || 'possible duplicate' }}</h2>
+    <p>Similarity {{ row.confidence || 'not scored' }} · {{ row.status }}</p>
+    <p *ngIf="row.records[0]"><strong>Original record:</strong> {{ row.records[0].label }} — {{ row.records[0].detail }}</p>
+    <p *ngFor="let match of row.records.slice(1)"><strong>Possible match:</strong> {{ match.label }} — {{ match.detail }}</p>
+    <p *ngIf="row.records.length < 2 && row.records[0]">Single record flagged for {{ row.ai_result?.finding || 'review' }}.</p>
+    <p *ngIf="row.ai_result?.explanation">{{ row.ai_result.explanation }}</p>
+    <ion-button size="small" fill="outline" (click)="assist(row)" [disabled]="row.status !== 'pending'">Ask Gemini for a suggestion</ion-button>
+    <div class="actions" *ngIf="row.status === 'pending' || row.status === 'reviewed'">
+      <ion-button size="small" (click)="decide(row, 'keep_both')">Keep Both Records</ion-button>
+      <ion-button size="small" fill="outline" (click)="decide(row, 'mark_for_correction')">Mark for Correction</ion-button>
+      <ion-button size="small" fill="clear" (click)="decide(row, 'dismiss')">Dismiss Suggestion</ion-button>
+    </div>
+  </article>
+  <p class="empty" *ngIf="!rows.length && !error">No flagged records. A scan only creates review items for staff to decide.</p>
+</ion-content>

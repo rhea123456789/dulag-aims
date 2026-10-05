@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Farmers</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <ion-searchbar *ngIf="auth.isStaff()" [(ngModel)]="search" (ionInput)="load()" placeholder="Search name or RSBSA"></ion-searchbar>
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <ion-list>
+    <ion-item *ngFor="let farmer of rows" [routerLink]="['/app/farmers', farmer.id]" detail="true">
+      <ion-label>
+        <h2>{{ farmer.first_name }} {{ farmer.last_name }}</h2>
+        <p>{{ farmer.barangay }} · {{ farmer.status }}</p>
+        <p *ngIf="farmer.rsbsa_reference_number">RSBSA {{ farmer.rsbsa_reference_number }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <p class="empty" *ngIf="!rows.length && !error">No farmer profiles to show.</p>
+</ion-content>

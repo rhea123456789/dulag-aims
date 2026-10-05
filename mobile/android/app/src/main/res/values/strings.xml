@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Dulag FAIMS</string>
+    <string name="title_activity_main">Dulag FAIMS</string>
+    <string name="package_name">leyte.dulag.faims</string>
+    <string name="custom_url_scheme">leyte.dulag.faims</string>
+</resources>

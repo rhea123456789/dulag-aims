@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <section class="panel welcome">
+    <p class="eyebrow">Municipal Agriculture Office of Dulag, Leyte</p>
+    <h1>Welcome{{ auth.user()?.name ? ', ' + auth.user()?.name : '' }}</h1>
+    <p>Dulag FAIMS — Farm and Agriculture Information Management System</p>
+  </section>
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <p class="empty" *ngIf="loading && auth.isOffice()">Loading dashboard…</p>
+
+  <section *ngIf="office" class="stat-grid">
+    <article><strong>{{ office.totals?.farmers ?? 0 }}</strong><span>Farmers</span></article>
+    <article><strong>{{ office.totals?.farms ?? 0 }}</strong><span>Farms</span></article>
+    <article><strong>{{ office.totals?.beneficiaries ?? 0 }}</strong><span>Beneficiaries</span></article>
+    <article><strong>{{ office.totals?.subsidies ?? 0 }}</strong><span>Subsidies</span></article>
+  </section>
+
+  <ng-container *ngIf="office">
+    <section class="panel">
+      <h2>Farmers by barangay</h2>
+      <p class="empty" *ngIf="!barangayBars().length">No barangay totals yet.</p>
+      <div class="bar-row" *ngFor="let row of barangayBars()">
+        <span>{{ row.label }}</span>
+        <div class="bar-track"><div [style.width.%]="row.width"></div></div>
+        <strong>{{ row.value }}</strong>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Subsidy status</h2>
+      <p class="empty" *ngIf="!statusBars().length">No subsidy records yet.</p>
+      <div class="bar-row" *ngFor="let row of statusBars()">
+        <span>{{ row.label }}</span>
+        <div class="bar-track"><div [style.width.%]="row.width"></div></div>
+        <strong>{{ row.value }}</strong>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Production by crop</h2>
+      <p class="empty" *ngIf="!cropBars().length">No production records yet.</p>
+      <div class="bar-row" *ngFor="let row of cropBars()">
+        <span>{{ row.label }}</span>
+        <div class="bar-track"><div [style.width.%]="row.width"></div></div>
+        <strong>{{ row.value }}</strong>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Recorded harvest quantity</h2>
+      <p class="empty" *ngIf="!trendBars().length">No harvest dates yet.</p>
+      <div class="bar-row" *ngFor="let row of trendBars()">
+        <span>{{ row.label }}</span>
+        <div class="bar-track"><div [style.width.%]="row.width"></div></div>
+        <strong>{{ row.value }}</strong>
+      </div>
+    </section>
+  </ng-container>
+
+  <section *ngIf="!auth.isOffice() && !loading" class="stat-grid">
+    <article><strong>{{ own.farmers }}</strong><span>Farmer profiles</span></article>
+    <article><strong>{{ own.subsidies }}</strong><span>Subsidy records</span></article>
+    <article><strong>{{ own.beneficiary || '—' }}</strong><span>Beneficiary profile</span></article>
+  </section>
+</ion-content>

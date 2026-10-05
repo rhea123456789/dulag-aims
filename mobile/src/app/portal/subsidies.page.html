@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Subsidies</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <ion-note color="success" *ngIf="message">{{ message }}</ion-note>
+  <section class="panel" *ngIf="auth.isOffice()">
+    <h2>New application</h2>
+    <ion-item>
+      <ion-select label="Farmer" labelPlacement="stacked" [(ngModel)]="farmerId">
+        <ion-select-option value="">None</ion-select-option>
+        <ion-select-option *ngFor="let farmer of farmers" [value]="farmer.id">{{ farmer.first_name }} {{ farmer.last_name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select label="Beneficiary" labelPlacement="stacked" [(ngModel)]="beneficiaryId">
+        <ion-select-option value="">None</ion-select-option>
+        <ion-select-option *ngFor="let person of beneficiaries" [value]="person.id">{{ person.first_name }} {{ person.last_name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item><ion-input label="Subsidy type" labelPlacement="stacked" [(ngModel)]="subsidyType"></ion-input></ion-item>
+    <ion-item><ion-input label="Application date" labelPlacement="stacked" type="date" [(ngModel)]="applicationDate"></ion-input></ion-item>
+    <ion-item><ion-input label="Amount" labelPlacement="stacked" type="number" [(ngModel)]="amount"></ion-input></ion-item>
+    <ion-button expand="block" (click)="save()">Save application</ion-button>
+  </section>
+  <ion-list>
+    <ion-item *ngFor="let row of rows">
+      <ion-label>
+        <h2>{{ row.subsidy_type }}</h2>
+        <p>{{ row.application_date }} · {{ row.status }}</p>
+        <p *ngIf="row.amount">Amount {{ row.amount }}</p>
+      </ion-label>
+      <ion-select *ngIf="auth.isOffice()" slot="end" [value]="row.status" (ionChange)="setStatus(row, $any($event).detail.value)" interface="popover">
+        <ion-select-option *ngFor="let status of statuses" [value]="status">{{ status }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <p class="empty" *ngIf="!rows.length && !error">No applications to show.</p>
+</ion-content>

@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/roles"></ion-back-button></ion-buttons>
+    <ion-title>{{ kind === 'farmer' ? 'Farmer registration' : 'Beneficiary registration' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="public-page">
+  <section class="form-card" *ngIf="!message">
+    <h1>{{ kind === 'farmer' ? 'Farmer account' : 'Beneficiary account' }}</h1>
+    <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+    <ion-item><ion-input label="Full name" labelPlacement="stacked" [(ngModel)]="fullName"></ion-input></ion-item>
+    <ion-item><ion-input label="Contact number" labelPlacement="stacked" [(ngModel)]="contactNumber"></ion-input></ion-item>
+    <ion-item><ion-input label="Address" labelPlacement="stacked" [(ngModel)]="address"></ion-input></ion-item>
+    <ion-item><ion-input label="Barangay" labelPlacement="stacked" [(ngModel)]="barangay"></ion-input></ion-item>
+    <ion-item *ngIf="kind === 'farmer'"><ion-input label="RSBSA reference number" labelPlacement="stacked" [(ngModel)]="rsbsa"></ion-input></ion-item>
+    <ion-item *ngIf="kind === 'farmer'"><ion-textarea label="Farm information" labelPlacement="stacked" [(ngModel)]="farmInformation"></ion-textarea></ion-item>
+    <ion-item *ngIf="kind === 'beneficiary'"><ion-textarea label="Beneficiary information" labelPlacement="stacked" [(ngModel)]="beneficiaryDetails"></ion-textarea></ion-item>
+    <ion-item><ion-input label="Email" labelPlacement="stacked" type="email" [(ngModel)]="email"></ion-input></ion-item>
+    <ion-item><ion-input label="Password" labelPlacement="stacked" type="password" [(ngModel)]="password"></ion-input></ion-item>
+    <ion-item><ion-input label="Confirm password" labelPlacement="stacked" type="password" [(ngModel)]="passwordConfirmation"></ion-input></ion-item>
+    <ion-button expand="block" (click)="submit()" [disabled]="busy">{{ busy ? 'Creating account…' : 'Create account' }}</ion-button>
+  </section>
+  <section class="form-card" *ngIf="message">
+    <h1>Account created</h1>
+    <p>{{ message }}</p>
+    <ion-button expand="block" (click)="goLogin()">Sign in</ion-button>
+  </section>
+</ion-content>

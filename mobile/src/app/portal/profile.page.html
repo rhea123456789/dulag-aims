@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Profile &amp; users</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <section class="panel">
+    <h1>Profile</h1>
+    <p>Your account comes from the signed-in session.</p>
+    <p><strong>{{ auth.user()?.name }}</strong></p>
+    <p>{{ auth.user()?.email }}</p>
+    <p>Role: {{ auth.user()?.role?.name }} · {{ auth.user()?.status }}</p>
+    <p class="empty" *ngIf="!auth.isAdmin()">Account changes are made by a system administrator.</p>
+  </section>
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <ion-note color="success" *ngIf="message">{{ message }}</ion-note>
+
+  <ng-container *ngIf="auth.isAdmin()">
+    <section class="panel">
+      <h2>{{ editing ? 'Update user' : 'Create user' }}</h2>
+      <ion-item><ion-input label="Name" labelPlacement="stacked" [(ngModel)]="name"></ion-input></ion-item>
+      <ion-item><ion-input label="Email" labelPlacement="stacked" type="email" [(ngModel)]="email"></ion-input></ion-item>
+      <ion-item><ion-input label="Password" labelPlacement="stacked" type="password" [(ngModel)]="password"></ion-input></ion-item>
+      <ion-item>
+        <ion-select label="Role" labelPlacement="stacked" [(ngModel)]="roleId">
+          <ion-select-option *ngFor="let role of roles" [value]="'' + role.id">{{ role.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Status" labelPlacement="stacked" [(ngModel)]="status">
+          <ion-select-option value="active">Active</ion-select-option>
+          <ion-select-option value="inactive">Inactive</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <div class="actions">
+        <ion-button (click)="saveUser()">{{ editing ? 'Update user' : 'Create user' }}</ion-button>
+        <ion-button *ngIf="editing" fill="outline" (click)="cancel()">Cancel</ion-button>
+      </div>
+    </section>
+
+    <section class="panel" *ngFor="let row of users">
+      <h2>{{ row.name }}</h2>
+      <p>{{ row.email }}</p>
+      <p>{{ row.role?.name }} · {{ row.status }}</p>
+      <ion-button size="small" fill="outline" (click)="edit(row)">Edit</ion-button>
+    </section>
+    <p class="empty" *ngIf="!users.length">No users to show.</p>
+
+    <section class="panel">
+      <h2>System settings</h2>
+      <p class="empty" *ngIf="!settings.length">No settings stored yet. Add a key, then save.</p>
+      <div class="setting-row" *ngFor="let row of settings">
+        <ion-item><ion-input label="Key" labelPlacement="stacked" [(ngModel)]="row.key"></ion-input></ion-item>
+        <ion-item><ion-input label="Value" labelPlacement="stacked" [(ngModel)]="row.value"></ion-input></ion-item>
+      </div>
+      <div class="actions">
+        <ion-button fill="outline" (click)="addSetting()">Add setting</ion-button>
+        <ion-button (click)="saveSettings()">Save settings</ion-button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Recent audit log</h2>
+      <p *ngFor="let log of logs">{{ log.created_at | date:'short' }} — {{ log.user?.name || 'System' }} — {{ log.action }} ({{ log.module }})</p>
+      <p class="empty" *ngIf="!logs.length">No audit entries yet.</p>
+    </section>
+  </ng-container>
+</ion-content>

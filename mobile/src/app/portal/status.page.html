@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Status tracking</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <ion-item>
+    <ion-select label="Status" labelPlacement="stacked" [(ngModel)]="filter" (ionChange)="load()">
+      <ion-select-option *ngFor="let status of statuses" [value]="status">{{ status || 'All' }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <ion-list>
+    <ion-item *ngFor="let row of rows">
+      <ion-label>
+        <h2>{{ row.subsidy_type }}</h2>
+        <p>{{ row.application_date }} · {{ row.status }}</p>
+      </ion-label>
+      <ion-select *ngIf="auth.isOffice()" slot="end" [value]="row.status" (ionChange)="setStatus(row, $any($event).detail.value)">
+        <ion-select-option *ngFor="let status of statuses" [value]="status" [disabled]="!status">{{ status }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <p class="empty" *ngIf="!rows.length && !error">No records match this status.</p>
+</ion-content>

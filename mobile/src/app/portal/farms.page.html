@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-menu-button></ion-menu-button></ion-buttons>
+    <ion-title>Farms</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <ion-note color="success" *ngIf="message">{{ message }}</ion-note>
+  <section class="panel" *ngIf="auth.hasRole('system_administrator', 'mao_personnel', 'agricultural_technician')">
+    <h2>Add landholding</h2>
+    <ion-item>
+      <ion-select label="Farmer" labelPlacement="stacked" [(ngModel)]="farmerId">
+        <ion-select-option *ngFor="let farmer of farmers" [value]="farmer.id">{{ farmer.first_name }} {{ farmer.last_name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item><ion-input label="Location" labelPlacement="stacked" [(ngModel)]="location"></ion-input></ion-item>
+    <ion-item><ion-input label="Barangay" labelPlacement="stacked" [(ngModel)]="barangay"></ion-input></ion-item>
+    <ion-item><ion-input label="Area (hectares)" labelPlacement="stacked" type="number" [(ngModel)]="area"></ion-input></ion-item>
+    <ion-button expand="block" (click)="save()">Save farm</ion-button>
+  </section>
+  <ion-list>
+    <ion-item *ngFor="let farm of rows">
+      <ion-label>
+        <h2>{{ farm.location }}</h2>
+        <p>{{ farm.barangay }} · {{ farm.area_hectares }} ha · {{ farm.status }}</p>
+        <p *ngIf="farm.farmer">{{ farm.farmer.first_name }} {{ farm.farmer.last_name }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <p class="empty" *ngIf="!rows.length && !error">No farm records to show.</p>
+</ion-content>

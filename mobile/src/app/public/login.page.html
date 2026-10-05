@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/"></ion-back-button></ion-buttons>
+    <ion-title>Sign in</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="public-page">
+  <section class="form-card">
+    <p class="eyebrow">Dulag FAIMS</p>
+    <h1>Sign in</h1>
+    <p class="lede">Municipal Agriculture Office of Dulag, Leyte</p>
+    <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+    <ion-item>
+      <ion-input #emailInput label="Email address" labelPlacement="stacked" type="email" [(ngModel)]="email" placeholder="Enter your email address"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input #passwordInput label="Password" labelPlacement="stacked" type="password" [(ngModel)]="password" placeholder="Enter your password"></ion-input>
+    </ion-item>
+    <ion-button expand="block" (click)="submit()" [disabled]="busy">{{ busy ? 'Signing in…' : 'Sign in' }}</ion-button>
+    <ion-button expand="block" fill="outline" routerLink="/roles">Create an account</ion-button>
+  </section>
+</ion-content>

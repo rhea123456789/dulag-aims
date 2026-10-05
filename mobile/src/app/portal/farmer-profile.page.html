@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-back-button defaultHref="/app/farmers"></ion-back-button></ion-buttons>
+    <ion-title>Farmer profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="portal-page">
+  <ion-note color="danger" *ngIf="error">{{ error }}</ion-note>
+  <ng-container *ngIf="farmer">
+    <section class="panel">
+      <h1>{{ farmer.first_name }} {{ farmer.middle_name }} {{ farmer.last_name }} {{ farmer.suffix }}</h1>
+      <p *ngIf="farmer.street">{{ farmer.street }}</p>
+      <p>{{ farmer.barangay }}, {{ farmer.municipality || 'Dulag' }}, {{ farmer.province || 'Leyte' }}</p>
+      <p>Status: {{ farmer.status }}</p>
+      <p *ngIf="farmer.rsbsa_reference_number">RSBSA: {{ farmer.rsbsa_reference_number }}</p>
+      <p *ngIf="farmer.contact_number">{{ farmer.contact_number }}</p>
+      <p *ngIf="farmer.email">{{ farmer.email }}</p>
+      <p *ngIf="farmer.birthdate">Birthdate: {{ farmer.birthdate | date:'mediumDate' }}</p>
+      <p *ngIf="farmer.sex">Sex: {{ farmer.sex }}</p>
+      <p *ngIf="farmer.civil_status">Civil status: {{ farmer.civil_status }}</p>
+      <p *ngIf="farmer.ownership_information">Ownership: {{ farmer.ownership_information }}</p>
+      <p *ngIf="farmer.notes">{{ farmer.notes }}</p>
+    </section>
+    <ion-note color="success" *ngIf="message">{{ message }}</ion-note>
+    <section class="panel" *ngIf="auth.hasRole('farmer')">
+      <h2>Update contact details</h2>
+      <ion-item><ion-input label="Contact number" labelPlacement="stacked" [(ngModel)]="contact"></ion-input></ion-item>
+      <ion-item><ion-input label="Street" labelPlacement="stacked" [(ngModel)]="street"></ion-input></ion-item>
+      <ion-item><ion-textarea label="Notes" labelPlacement="stacked" [(ngModel)]="notes"></ion-textarea></ion-item>
+      <ion-button expand="block" (click)="save()">Save profile</ion-button>
+    </section>
+    <ion-button *ngIf="auth.hasRole('system_administrator', 'mao_personnel', 'rsbsa_focal_person') && farmer.status !== 'verified'" expand="block" (click)="verify()">Mark verified</ion-button>
+    <section class="panel" *ngIf="farmer.farms?.length">
+      <h2>Farms</h2>
+      <p *ngFor="let farm of farmer.farms">{{ farm.location }}, {{ farm.barangay }} · {{ farm.area_hectares }} ha</p>
+    </section>
+  </ng-container>
+</ion-content>
