@@ -5,12 +5,12 @@ import { summaryBlocks } from '../summaryText'
 import type { AiSummary, Page } from '../types'
 
 const TYPES = [
-  ['farmer', 'Farmer records', '/farmers'],
-  ['farm', 'Farm information', '/farms'],
-  ['production', 'Production records', '/productions'],
-  ['subsidy', 'Subsidy records', '/subsidies'],
-  ['beneficiary', 'Beneficiary records', '/beneficiaries'],
-  ['findings', 'Flagged findings', '/ai/reviews'],
+  ['farmer', 'Farmer Records', '/farmers'],
+  ['farm', 'Farm Information', '/farms'],
+  ['production', 'Production Records', '/productions'],
+  ['subsidy', 'Subsidy Records', '/subsidies'],
+  ['beneficiary', 'Beneficiary Records', '/beneficiaries'],
+  ['findings', 'Flagged Findings', '/ai/reviews'],
 ] as const
 
 type Choice = { id: number; label: string }
@@ -64,9 +64,9 @@ export function AiSummaryPage() {
   }
 
   async function remove(row: AiSummary) {
-    const kind = row.source_records.record_type || 'saved'
+    const kind = summaryTitle(row.source_records.record_type)
     const confirmed = window.confirm(
-      `Delete this ${kind} summary? Farmer, farm, production, subsidy, and beneficiary records will not be changed.`,
+      `Delete this ${kind}? Farmer, farm, production, subsidy, and beneficiary records will not be changed.`,
     )
     if (!confirmed) return
     setDeletingId(row.id)
@@ -82,63 +82,104 @@ export function AiSummaryPage() {
   }
 
   return (
-    <section>
+    <section className="summary-page">
       <div className="page-head">
         <div>
           <h1>AI Summary Generator</h1>
-          <p>Summaries describe selected records. They do not predict outcomes or change any record.</p>
+          <p>Generate concise summaries from selected agriculture records for staff review.</p>
         </div>
       </div>
       <Banner error={error} />
-      <article className="card">
+      <article className="card tone-green summary-picker">
+        <h2>Select Records</h2>
         <label>
-          Records
+          Record Type
           <select value={recordType} onChange={(event) => setRecordType(event.target.value as (typeof TYPES)[number][0])}>
             {TYPES.map(([value, title]) => <option key={value} value={value}>{title}</option>)}
           </select>
         </label>
-        <div className="stack">
+        <div className="choice-list">
           {choices.map((choice) => (
-            <label key={choice.id}>
-              <input type="checkbox" checked={selected.includes(choice.id)} onChange={() => toggle(choice.id)} /> {choice.label}
+            <label className="choice-row" key={choice.id}>
+              <input type="checkbox" checked={selected.includes(choice.id)} onChange={() => toggle(choice.id)} />
+              <span>{choice.label}</span>
             </label>
           ))}
           {choices.length === 0 && <p className="muted">No records of this type are available.</p>}
         </div>
-        <button disabled={busy || selected.length === 0} onClick={generate}>{busy ? 'Generating…' : 'Generate AI summary'}</button>
+        <button disabled={busy || selected.length === 0} onClick={generate}>{busy ? 'Generating…' : 'Generate Summary'}</button>
       </article>
-      {rows.map((row) => (
-        <article className="card" key={row.id}>
-          <div className="summary-card-head">
-            <h2>{row.source_records.record_type} summary</h2>
-            <button className="quiet-danger" type="button" disabled={deletingId === row.id} onClick={() => remove(row)}>
-              {deletingId === row.id ? 'Deleting…' : 'Delete'}
-            </button>
-          </div>
+      {rows.length > 0 && (
+        <div className="summary-list">
+          <h2>Generated Summaries</h2>
+          {rows.map((row) => (
+            <SummaryCard key={row.id} row={row} deleting={deletingId === row.id} onDelete={() => remove(row)} />
+          ))}
+        </div>
+      )}
+      {rows.length === 0 && <p className="muted">No summaries have been generated.</p>}
+    </section>
+  )
+}
+
+function SummaryCard({ row, deleting, onDelete }: { row: AiSummary; deleting: boolean; onDelete: () => void }) {
+  const [open, setOpen] = useState(false)
+  const blocks = summaryBlocks(row.generated_summary)
+  const preview = blocks.find((block) => block.kind === 'paragraph')?.text
+  const count = Array.isArray(row.source_records.record_ids) ? row.source_records.record_ids.length : null
+
+  return (
+    <article className={open ? 'card summary-report is-open' : 'card summary-report'}>
+      <div className="summary-card-head">
+        <div>
+          <h2>{summaryTitle(row.source_records.record_type)}</h2>
+          <p>Municipal Agriculture Office of Dulag, Leyte</p>
+          <span className="review-flag">Requires Human Review</span>
+        </div>
+      </div>
+      {!open && preview && <p className="summary-preview">{preview}</p>}
+      {count !== null && <p className="summary-meta">Generated from {count} selected {count === 1 ? 'record' : 'records'}.</p>}
+      <div className="summary-actions">
+        <button type="button" className="ghost" onClick={() => setOpen((current) => !current)}>{open ? 'Hide Summary' : 'View Summary'}</button>
+        <button className="quiet-danger" type="button" disabled={deleting} onClick={onDelete}>{deleting ? 'Deleting…' : 'Delete'}</button>
+      </div>
+      <div className={open ? 'summary-body is-open' : 'summary-body'}>
+        <div>
+          <h3>Summary of Selected Agricultural Records</h3>
           {row.source_records.source === 'fallback' && (
             <p className="muted">{row.source_records.notice || 'Gemini is temporarily unavailable. A fallback summary was generated.'}</p>
           )}
           <div className="summary-copy">
-            {summaryBlocks(row.generated_summary).map((block, index) => (
+            {blocks.map((block, index) => (
               block.kind === 'heading'
                 ? <h3 key={index}>{block.text}</h3>
                 : <p key={index}>{block.text}</p>
             ))}
           </div>
-          <p className="muted">Date generated: {new Date(row.created_at).toLocaleString()}</p>
-          <p className="muted">Generated by: {row.author?.name || 'Staff'}</p>
-          <p className="muted">AI source: {sourceLabel(row.source_records.source)}</p>
-        </article>
-      ))}
-      {rows.length === 0 && <p className="muted">No summaries yet.</p>}
-    </section>
+          <p className="summary-meta">Generated {new Date(row.created_at).toLocaleString()} by {row.author?.name || 'Staff'}. Source: {sourceLabel(row.source_records.source)}.</p>
+          <p className="summary-meta">A staff member must make the final decision.</p>
+        </div>
+      </div>
+    </article>
   )
+}
+
+function summaryTitle(type?: string) {
+  const titles: Record<string, string> = {
+    farmer: 'Farmer Summary',
+    farm: 'Farm Summary',
+    production: 'Production Summary',
+    subsidy: 'Subsidy Summary',
+    beneficiary: 'Beneficiary Summary',
+    findings: 'Findings Summary',
+  }
+  return (type && titles[type]) || 'Record Summary'
 }
 
 function sourceLabel(source?: string) {
   if (source === 'gemini') return 'Gemini'
-  if (source === 'fallback') return 'AI unavailable/fallback'
-  return 'Local rules'
+  if (source === 'fallback') return 'Fallback summary'
+  return 'Office records'
 }
 
 function choiceLabel(type: string, row: Record<string, unknown>) {

@@ -22,11 +22,11 @@ class RegisterController extends Controller
             'contact_number' => ['required', 'string', 'max:30', 'regex:/^[0-9+\-\s()]{7,30}$/'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email'), Rule::unique('farmer_profiles', 'email')],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'address' => ['required', 'string', 'max:255'],
-            'barangay' => ['required', 'string', 'max:255'],
-            'rsbsa_reference_number' => ['required_if:type,farmer', 'nullable', 'string', 'max:255'],
-            'farm_information' => ['required_if:type,farmer', 'nullable', 'string', 'max:2000'],
-            'beneficiary_details' => ['required_if:type,beneficiary', 'nullable', 'string', 'max:2000'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'barangay' => ['nullable', 'string', 'max:255'],
+            'rsbsa_reference_number' => ['nullable', 'string', 'max:255'],
+            'farm_information' => ['nullable', 'string', 'max:2000'],
+            'beneficiary_details' => ['nullable', 'string', 'max:2000'],
         ], [
             'full_name.regex' => 'Enter your first and last name.',
             'contact_number.regex' => 'Enter a valid contact number.',
@@ -52,12 +52,12 @@ class RegisterController extends Controller
                     'last_name' => $lastName,
                     'contact_number' => $data['contact_number'],
                     'email' => $data['email'],
-                    'street' => $data['address'],
-                    'barangay' => $data['barangay'],
+                    'street' => $data['address'] ?? null,
+                    'barangay' => ($data['barangay'] ?? null) ?: 'Pending',
                     'municipality' => 'Dulag',
                     'province' => 'Leyte',
-                    'rsbsa_reference_number' => $data['rsbsa_reference_number'],
-                    'notes' => $data['farm_information'],
+                    'rsbsa_reference_number' => $data['rsbsa_reference_number'] ?? null,
+                    'notes' => $data['farm_information'] ?? null,
                     'status' => 'pending_verification',
                 ]);
             } else {
@@ -66,10 +66,10 @@ class RegisterController extends Controller
                     'first_name' => $firstName,
                     'last_name' => $lastName,
                     'contact_number' => $data['contact_number'],
-                    'barangay' => $data['barangay'],
-                    'address' => $data['address'],
+                    'barangay' => ($data['barangay'] ?? null) ?: 'Pending',
+                    'address' => $data['address'] ?? null,
                     'subsidy_status' => 'none',
-                    'notes' => $data['beneficiary_details'],
+                    'notes' => $data['beneficiary_details'] ?? null,
                 ]);
             }
 

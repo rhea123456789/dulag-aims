@@ -72,19 +72,45 @@ export function AiReviewPage() {
         const matches = row.records.slice(1)
         const open = row.status === 'pending' || row.status === 'reviewed'
         return (
-          <article className="card" key={row.id}>
-            <h2>{label(row.record_type)} · {label(row.ai_result?.finding || 'possible duplicate')}</h2>
-            <p>Similarity {row.confidence ?? 'not scored'} · <Pill value={row.status} /></p>
-            {original && <p><strong>Original record:</strong> {original.label} — {original.detail}</p>}
-            {matches.map((match) => (
-              <p key={match.id}><strong>Possible duplicate:</strong> {match.label} — {match.detail}</p>
-            ))}
+          <article className="review-card" key={row.id}>
+            <header className="review-head">
+              <div>
+                <p>{label(row.record_type)}</p>
+                <h2>{label(row.ai_result?.finding || 'possible duplicate')}</h2>
+              </div>
+              <div>
+                <span>Similarity {row.confidence ?? 'not scored'}</span>
+                <Pill value={row.status} />
+              </div>
+            </header>
+            <div className="review-pair">
+              {original && (
+                <div className="review-pane tone-green">
+                  <p>Original record</p>
+                  <strong>{original.label}</strong>
+                  <span>{original.detail}</span>
+                </div>
+              )}
+              {matches.map((match) => (
+                <div className="review-pane tone-amber" key={match.id}>
+                  <p>Possible duplicate</p>
+                  <strong>{match.label}</strong>
+                  <span>{match.detail}</span>
+                </div>
+              ))}
+            </div>
             {row.records.length < 2 && original && <p>Single record flagged for {label(row.ai_result?.finding || 'review')}.</p>}
-            <p><strong>Rule-based findings:</strong> {(row.ai_result?.rule_hits ?? []).map(label).join(', ') || 'None recorded'}</p>
-            <p><strong>Gemini explanation:</strong> {row.ai_result?.explanation || 'Not requested yet.'}</p>
+            <div className="review-pane">
+              <p>Why it was flagged</p>
+              <span>{(row.ai_result?.rule_hits ?? []).map(label).join(', ') || 'None recorded'}</span>
+            </div>
+            <div className="review-pane tone-ai">
+              <p>AI explanation</p>
+              <span>{row.ai_result?.explanation || 'Not requested yet.'}</span>
+            </div>
             {row.reviewed_by && <p className="muted">Reviewed by {row.reviewed_by}</p>}
             <div className="btn-row">
-              <button className="ghost" disabled={busy === `assist-${row.id}` || row.status !== 'pending'} onClick={() => assist(row.id)}>Ask Gemini for a suggestion</button>
+              <button className="ghost" disabled={busy === `assist-${row.id}` || row.status !== 'pending'} onClick={() => assist(row.id)}>Request AI Review</button>
               {open && (
                 <>
                   <button disabled={busy === `decide-${row.id}`} onClick={() => decide(row.id, 'keep_both')}>Keep Both Records</button>

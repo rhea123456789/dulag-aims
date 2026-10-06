@@ -1,8 +1,17 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { api, personName } from '../api'
 import { hasRole, useAuth } from '../auth'
+import { RecordSnapshot } from '../components/RecordSnapshot'
 import { Banner, Field, Pager, Pill } from '../components/ui'
 import type { Farmer, Page } from '../types'
+
+const barangays = [
+  'Alegre', 'Arado', 'Barbo', 'Batug', 'Bolongtohan', 'Bulod', 'Buntay', 'Cabacungan', 'Cabarasan', 'Cabato-an',
+  'Calipayan', 'Calubian', 'Cambula District', 'Camitoc', 'Camote', 'Candao', 'Catmonan', 'Combis', 'Dacay', 'Del Carmen',
+  'Del Pilar', 'Fatima', 'General Roxas', 'Highway', 'Luan', 'Magsaysay', 'Maricum', 'Market Site', 'Rawis', 'Rizal',
+  'Romualdez', 'Sabang Daguitan', 'Salvacion', 'San Agustin', 'San Antonio', 'San Isidro', 'San Jose', 'San Miguel',
+  'San Rafael', 'San Vicente', 'Serrano', 'Sungi', 'Tabu', 'Tigbao', 'Victory',
+]
 
 function toForm(farmer: Farmer): Record<string, string> {
   return {
@@ -41,6 +50,7 @@ export function FarmersPage() {
   const [page, setPage] = useState<Page<Farmer> | null>(null)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
+  const [barangay, setBarangay] = useState('')
   const [form, setForm] = useState<Record<string, string> | null>(null)
   const [editing, setEditing] = useState<number | null>(null)
   const [error, setError] = useState<unknown>(null)
@@ -50,6 +60,7 @@ export function FarmersPage() {
     const params = new URLSearchParams({ page: String(next) })
     if (search) params.set('search', search)
     if (status) params.set('status', status)
+    if (barangay) params.set('barangay', barangay)
     api<Page<Farmer>>(`/farmers?${params}`).then(setPage).catch(setError)
   }
 
@@ -84,9 +95,13 @@ export function FarmersPage() {
   return (
     <section>
       <div className="page-head">
-        <div><h1>Farmers</h1><p>Profiles, RSBSA reference numbers, and verification status.</p></div>
+        <div>
+          <h1>{hasRole(user, 'agricultural_technician') ? 'Assigned Farmers' : 'Farmers'}</h1>
+          <p>{hasRole(user, 'agricultural_technician') ? 'Farmer profiles assigned to you for field validation.' : 'Profiles, RSBSA reference numbers, and verification status.'}</p>
+        </div>
         {canWrite && <button onClick={() => { setEditing(null); setForm({ ...empty }); setError(null) }}>Add farmer</button>}
       </div>
+      <RecordSnapshot kind="farmers" />
       <form className="toolbar" onSubmit={(e) => { e.preventDefault(); setPageNo(1); load(1) }}>
         <input placeholder="Search name, contact, barangay, RSBSA" value={search} onChange={(e) => setSearch(e.target.value)} />
         <select value={status} onChange={(e) => setStatus(e.target.value)}>
@@ -95,6 +110,10 @@ export function FarmersPage() {
           <option value="verified">Verified</option>
           <option value="active">Active</option>
           <option value="archived">Archived</option>
+        </select>
+        <select value={barangay} onChange={(e) => setBarangay(e.target.value)}>
+          <option value="">All barangays</option>
+          {barangays.map((item) => <option key={item} value={item}>{item}</option>)}
         </select>
         <button className="ghost" type="submit">Filter</button>
       </form>

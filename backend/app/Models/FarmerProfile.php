@@ -24,9 +24,15 @@ class FarmerProfile extends Model
         'contact_number',
         'email',
         'street',
+        'sitio',
         'barangay',
         'municipality',
         'province',
+        'region',
+        'place_of_birth',
+        'education_level',
+        'livelihood_type',
+        'association_name',
         'ownership_information',
         'rsbsa_reference_number',
         'status',
@@ -34,6 +40,7 @@ class FarmerProfile extends Model
         'verified_at',
         'archived_at',
         'notes',
+        'profile_completed_at',
     ];
 
     protected function casts(): array
@@ -42,6 +49,7 @@ class FarmerProfile extends Model
             'birthdate' => 'date',
             'verified_at' => 'datetime',
             'archived_at' => 'datetime',
+            'profile_completed_at' => 'datetime',
         ];
     }
 

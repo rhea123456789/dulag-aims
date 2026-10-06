@@ -2,6 +2,8 @@ import { useState, type ReactNode } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { hasRole, useAuth } from '../auth'
 import type { RoleSlug } from '../types'
+import { OfficeShell } from './OfficeShell'
+import { TechnicianShell } from './TechnicianShell'
 import { Seal } from './Seal'
 
 const links: { to: string; label: string; icon: ReactNode; roles: RoleSlug[] }[] = [
@@ -29,6 +31,8 @@ export function Layout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
+  if (hasRole(user, 'system_administrator', 'mao_personnel')) return <OfficeShell />
+  if (hasRole(user, 'agricultural_technician')) return <TechnicianShell />
   const visible = links.filter((link) => hasRole(user, ...link.roles))
 
   return (

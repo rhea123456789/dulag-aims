@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { api, personName } from '../api'
 import { hasRole, useAuth } from '../auth'
+import { RecordSnapshot } from '../components/RecordSnapshot'
 import { Banner, Field, Pager, Pill } from '../components/ui'
 import type { Farm, Farmer, Page } from '../types'
 
@@ -69,6 +70,7 @@ export function FarmsPage() {
         <div><h1>Farms</h1><p>Landholdings linked to a farmer profile.</p></div>
         {canWrite && <button onClick={() => openForm()}>Add farm</button>}
       </div>
+      <RecordSnapshot kind="farms" />
       <form className="toolbar" onSubmit={(e) => { e.preventDefault(); setPageNo(1); load(1) }}>
         <input placeholder="Search location, barangay, parcel" value={search} onChange={(e) => setSearch(e.target.value)} />
         <button className="ghost" type="submit">Search</button>

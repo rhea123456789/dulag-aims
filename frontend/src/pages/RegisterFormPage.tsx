@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../api'
+import { useAuth } from '../auth'
 import { ModuleIcon } from '../components/ModuleIcon'
 import { RegisterVisual } from '../components/SiteHeader'
 import { Banner, Field } from '../components/ui'
@@ -11,21 +12,17 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function RegisterFormPage() {
   const { kind } = useParams()
+  const navigate = useNavigate()
+  const { login } = useAuth()
   const type: Kind | null = kind === 'farmer' || kind === 'beneficiary' ? kind : null
   const [fullName, setFullName] = useState('')
   const [contactNumber, setContactNumber] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [address, setAddress] = useState('')
-  const [barangay, setBarangay] = useState('')
-  const [rsbsa, setRsbsa] = useState('')
-  const [farmInformation, setFarmInformation] = useState('')
-  const [beneficiaryDetails, setBeneficiaryDetails] = useState('')
   const [error, setError] = useState<unknown>(null)
   const [localError, setLocalError] = useState('')
   const [busy, setBusy] = useState(false)
-  const [success, setSuccess] = useState('')
 
   if (!type) return <Navigate to="/register" replace />
 
@@ -51,7 +48,7 @@ export function RegisterFormPage() {
     }
     setBusy(true)
     try {
-      const result = await api<{ message: string }>('/register', {
+      await api<{ message: string }>('/register', {
         method: 'POST',
         body: JSON.stringify({
           type,
@@ -60,14 +57,10 @@ export function RegisterFormPage() {
           email: email.trim(),
           password,
           password_confirmation: passwordConfirmation,
-          address: address.trim(),
-          barangay: barangay.trim(),
-          rsbsa_reference_number: type === 'farmer' ? rsbsa.trim() : undefined,
-          farm_information: type === 'farmer' ? farmInformation.trim() : undefined,
-          beneficiary_details: type === 'beneficiary' ? beneficiaryDetails.trim() : undefined,
         }),
       })
-      setSuccess(result.message)
+      await login(email.trim(), password)
+      navigate('/complete-profile', { replace: true })
     } catch (err) {
       setError(err)
     } finally {
@@ -82,69 +75,25 @@ export function RegisterFormPage() {
         <div className="register-card">
         <p className="register-back"><Link to="/register">Back to registration options</Link></p>
         <h1>{type === 'farmer' ? 'Farmer Registration' : 'Beneficiary Registration'}</h1>
+        <p className="register-intro">Create your account first. Agricultural details come in the next step.</p>
         <div className="register-switch">
           <Link className={type === 'farmer' ? 'active' : ''} to="/register/farmer"><ModuleIcon name="farmer" />Farmer</Link>
           <Link className={type === 'beneficiary' ? 'active' : ''} to="/register/beneficiary"><ModuleIcon name="users" />Beneficiary</Link>
         </div>
-        {success ? (
-          <div className="success-box">
-            <p>{success}</p>
-            <Link className="site-btn" to="/login">Go to login</Link>
-          </div>
-        ) : (
-          <form className="register-form" onSubmit={onSubmit}>
+        <form className="register-form" onSubmit={onSubmit}>
             <Banner error={localError ? new Error(localError) : error} />
-            <fieldset>
-              <legend>Personal Information</legend>
-              <div className="register-grid">
-                <Field label="Full Name" name="full_name" error={error}>
-                  <input value={fullName} onChange={(e) => setFullName(e.target.value)} required autoComplete="name" />
-                </Field>
-                <Field label="Contact Number" name="contact_number" error={error}>
-                  <input value={contactNumber} onChange={(e) => setContactNumber(e.target.value)} required autoComplete="tel" />
-                </Field>
-                <div className="span-2">
-                  <Field label="Address" name="address" error={error}>
-                    <input value={address} onChange={(e) => setAddress(e.target.value)} required autoComplete="street-address" />
-                  </Field>
-                </div>
-                <div className="span-2">
-                  <Field label="Barangay" name="barangay" error={error}>
-                    <input value={barangay} onChange={(e) => setBarangay(e.target.value)} required />
-                  </Field>
-                </div>
-              </div>
-            </fieldset>
-            {type === 'farmer' ? (
-              <fieldset>
-                <legend>Agricultural Information</legend>
-                <div className="register-grid">
-                  <div className="span-2">
-                    <Field label="RSBSA Reference Number" name="rsbsa_reference_number" error={error}>
-                      <input value={rsbsa} onChange={(e) => setRsbsa(e.target.value)} required />
-                    </Field>
-                  </div>
-                  <div className="span-2">
-                    <Field label="Farm Information" name="farm_information" error={error}>
-                      <textarea value={farmInformation} onChange={(e) => setFarmInformation(e.target.value)} required />
-                    </Field>
-                  </div>
-                </div>
-              </fieldset>
-            ) : (
-              <fieldset>
-                <legend>Beneficiary Information</legend>
-                <Field label="Beneficiary Information" name="beneficiary_details" error={error}>
-                  <textarea value={beneficiaryDetails} onChange={(e) => setBeneficiaryDetails(e.target.value)} required />
-                </Field>
-              </fieldset>
-            )}
             <fieldset>
               <legend>Account Information</legend>
               <div className="register-grid">
+                <Field label="Full Name" name="full_name" error={error}>
+                  <input value={fullName} onChange={(e) => setFullName(e.target.value)} required autoComplete="name" placeholder="First and last name" />
+                </Field>
+                <Field label="Contact Number" name="contact_number" error={error}>
+                  <input value={contactNumber} onChange={(e) => setContactNumber(e.target.value)} required autoComplete="tel" placeholder="09XXXXXXXXX" />
+                </Field>
                 <div className="span-2">
                   <Field label="Email Address" name="email" error={error}>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" placeholder="name@email.com" />
                   </Field>
                 </div>
                 <Field label="Password" name="password" error={error}>
@@ -157,7 +106,6 @@ export function RegisterFormPage() {
             </fieldset>
             <button className="register-submit" disabled={busy}>{busy ? 'Submitting…' : 'Create Account'}</button>
           </form>
-        )}
         </div>
       </section>
     </div>

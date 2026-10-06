@@ -34,7 +34,7 @@ export function ReportsPage() {
       {error && <p className="alert">{error}</p>}
       <div className="grid">
         {REPORTS.map(([type, title]) => (
-          <article className="card" key={type}>
+          <article className="card tone-green" key={type}>
             <h2>{title}</h2>
             <div className="btn-row">
               <button disabled={busy === `${type}-xlsx`} onClick={() => download(type, 'xlsx')}>Download Excel</button>

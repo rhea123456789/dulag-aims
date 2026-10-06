@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { api, day, personName } from '../api'
 import { hasRole, useAuth } from '../auth'
+import { RecordSnapshot } from '../components/RecordSnapshot'
 import { Banner, Field, Pager, Pill } from '../components/ui'
 import type { Beneficiary, Farmer, Page, Subsidy } from '../types'
 
@@ -73,6 +74,7 @@ export function SubsidiesPage() {
         <div><h1>Subsidies</h1><p>Applications move from pending through release. Staff update the status.</p></div>
         {canManage && <button onClick={openForm}>New application</button>}
       </div>
+      <RecordSnapshot kind="subsidies" />
       <form className="toolbar" onSubmit={(e) => { e.preventDefault(); setPageNo(1); load(1) }}>
         <select value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">All statuses</option>

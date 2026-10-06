@@ -58,7 +58,7 @@ export function SettingsPage() {
 
   return (
     <section>
-      <div className="page-head"><div><h1>Profile</h1><p>Your account comes from the signed-in Sanctum session.</p></div></div>
+      <div className="page-head"><div><h1>{hasRole(user, 'agricultural_technician') ? 'My Account' : 'Profile'}</h1><p>Your account comes from the signed-in Sanctum session.</p></div></div>
       <article className="card">
         <p><strong>{user?.name}</strong></p>
         <p>{user?.email}</p>
@@ -119,7 +119,7 @@ export function SettingsPage() {
               <button type="submit">Save settings</button>
             </div>
           </form>
-          <article className="card" style={{ marginTop: 12 }}>
+          <article className="card tone-green" id="activity-log" style={{ marginTop: 12 }}>
             <h2>Recent audit log</h2>
             <ul>
               {logs?.data.slice(0, 8).map((log) => (

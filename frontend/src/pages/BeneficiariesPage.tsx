@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { api, day, personName } from '../api'
 import { hasRole, useAuth } from '../auth'
+import { RecordSnapshot } from '../components/RecordSnapshot'
 import { Banner, Field, Pager, Pill } from '../components/ui'
 import type { Assistance, Beneficiary, Page } from '../types'
 
@@ -69,6 +70,7 @@ export function BeneficiariesPage() {
         <div><h1>Beneficiaries</h1><p>Profiles and assistance history.</p></div>
         {office && <button onClick={() => { setForm({ ...empty }); setError(null) }}>Add beneficiary</button>}
       </div>
+      {office && <RecordSnapshot kind="beneficiaries" />}
       {office && (
         <form className="toolbar" onSubmit={(e) => { e.preventDefault(); setPageNo(1); load(1) }}>
           <input placeholder="Search name or barangay" value={search} onChange={(e) => setSearch(e.target.value)} />

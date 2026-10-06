@@ -10,6 +10,7 @@ use App\Http\Controllers\DuplicateReviewController;
 use App\Http\Controllers\FarmController;
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\ProductionController;
+use App\Http\Controllers\ProfileCompletionController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SubsidyController;
@@ -23,6 +24,8 @@ Route::post('/register', [RegisterController::class, 'store'])->middleware('thro
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/profile/completion', [ProfileCompletionController::class, 'show']);
+    Route::put('/profile/completion', [ProfileCompletionController::class, 'update']);
 
     Route::middleware('role:'.Role::ADMINISTRATOR)->group(function () {
         Route::get('/users', [UserController::class, 'index']);

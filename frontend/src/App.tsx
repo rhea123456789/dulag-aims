@@ -10,12 +10,14 @@ import { FarmersPage } from './pages/FarmersPage'
 import { FarmsPage } from './pages/FarmsPage'
 import { LandingPage } from './pages/LandingPage'
 import { FeaturesPage } from './pages/FeaturesPage'
+import { CompleteProfilePage } from './pages/CompleteProfilePage'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterFormPage } from './pages/RegisterFormPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { ProductionPage } from './pages/ProductionPage'
 import { ReportsPage } from './pages/ReportsPage'
 import { SettingsPage } from './pages/SettingsPage'
+import { SubmissionStatusPage } from './pages/SubmissionStatusPage'
 import { SubsidiesPage } from './pages/SubsidiesPage'
 import type { RoleSlug } from './types'
 
@@ -40,6 +42,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/register/:kind" element={<RegisterFormPage />} />
+      <Route path="/complete-profile" element={<Guard><CompleteProfilePage /></Guard>} />
       <Route element={<Guard><Layout /></Guard>}>
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="farmers" element={<RoleGate roles={['system_administrator', 'mao_personnel', 'rsbsa_focal_person', 'agricultural_technician', 'farmer']}><FarmersPage /></RoleGate>} />
@@ -50,6 +53,7 @@ export default function App() {
         <Route path="reports" element={<RoleGate roles={['system_administrator', 'mao_personnel']}><ReportsPage /></RoleGate>} />
         <Route path="ai-review" element={<RoleGate roles={['system_administrator', 'mao_personnel']}><AiReviewPage /></RoleGate>} />
         <Route path="ai-summaries" element={<RoleGate roles={['system_administrator', 'mao_personnel']}><AiSummaryPage /></RoleGate>} />
+        <Route path="submissions" element={<RoleGate roles={['agricultural_technician']}><SubmissionStatusPage /></RoleGate>} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

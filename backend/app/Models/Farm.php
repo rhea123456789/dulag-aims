@@ -19,6 +19,7 @@ class Farm extends Model
         'area_hectares',
         'land_classification',
         'ownership_arrangement',
+        'land_owner_name',
         'cultivation_details',
         'status',
     ];

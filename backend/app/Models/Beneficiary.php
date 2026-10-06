@@ -17,12 +17,34 @@ class Beneficiary extends Model
         'first_name',
         'middle_name',
         'last_name',
+        'suffix',
+        'birthdate',
+        'place_of_birth',
+        'sex',
+        'civil_status',
         'contact_number',
+        'street',
+        'sitio',
         'barangay',
+        'municipality',
+        'province',
+        'region',
+        'education_level',
+        'livelihood_type',
+        'association_name',
         'address',
         'subsidy_status',
         'notes',
+        'profile_completed_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'birthdate' => 'date',
+            'profile_completed_at' => 'datetime',
+        ];
+    }
 
     public function fullName(): string
     {
